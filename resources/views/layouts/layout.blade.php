@@ -258,7 +258,6 @@
         <div class="container">
             <div class="row">
                 <p class="pull-left">Copyright © {{date('Y')}} E-SHOPPER Inc. All rights reserved.</p>
-                <p class="pull-right">Laravel implementation by <span><a target="_blank" href="http://www.tutorials.kode-blog.com">Tutorials Kode Blog</a></span> |  Designed by <span><a target="_blank" href="http://www.themeum.com">Themeum</a></span></p>
             </div>
         </div>
     </div>
