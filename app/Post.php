@@ -3,27 +3,44 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Post extends BaseModel
 {
-    protected $primaryKey = 'id';
-    protected $table = 'posts';
-    protected $fillable = array('url', 'title', 'description','content','image','blog','category_id','created_at_ip', 'updated_at_ip');
+    protected $fillable = array('url', 'title', 'description', 'content', 'image', 'blog', 'category_id');
 
     public static function prevBlogPostUrl($id) {
-        $blog = static::where('id', '<', $id)->orderBy('id', 'desc')->first();
+        $blog = DB::table('posts')
+            ->orderBy('id', 'desc')
+            ->skip(0)
+            ->take(1)
+            ->where('id', '<', $id)
+            ->get();
 
-        return $blog ? $blog->url : '#';
+        $url = '#';
+
+        if (count($blog) > 0) {
+            $url = $blog[0]->url;
+        }
+
+        return $url;
     }
 
     public static function nextBlogPostUrl($id) {
-        $blog = static::where('id', '>', $id)->orderBy('id', 'asc')->first();
+        $blog = DB::table('posts')
+            ->orderBy('id', 'asc')
+            ->skip(0)
+            ->take(1)
+            ->where('id', '>', $id)
+            ->get();
 
-        return $blog ? $blog->url : '#';
-    }
+        $url = '#';
 
-    public function tags() {
-        return $this->belongsToMany('App\BlogTag','blog_post_tags','post_id','tag_id');
+        if (count($blog) > 0) {
+            $url = $blog[0]->url;
+        }
+
+        return $url;
     }
 
 }
