@@ -46,7 +46,7 @@
                                     <p class="cart_total_price">${{$item->subtotal}}</p>
                                 </td>
                                 <td class="cart_delete">
-                                    <a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
+                                    <a class="cart_quantity_delete" href="{{url("cart?product_id=$item->id&delete=1")}}"><i class="fa fa-times"></i></a>
                                 </td>
                             </tr>
                         @endforeach

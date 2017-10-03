@@ -30,7 +30,6 @@ Route::post('/register', 'Front@register');
 // Registration routes...
 Route::get('/cart', 'Front@cart');
 Route::post('/cart', 'Front@cart');
-Route::post('/cart-remove-item', 'Front@cart_remove_item');
 Route::get('/clear-cart', 'Front@clear_cart');
 Route::get('/checkout', [
     'middleware' => 'auth',
