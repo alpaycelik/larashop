@@ -149,7 +149,6 @@ class Front extends Controller {
         return view('cart', array('cart' => $cart, 'title' => 'Welcome', 'description' => '', 'page' => 'home'));
     }
 
-
     public function clear_cart() {
         Cart::destroy();
         return Redirect::away('cart');
