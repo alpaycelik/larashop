@@ -63,3 +63,16 @@ Route::get('/api/v1/categories/{id?}', ['middleware' => 'auth.basic', function($
         'status_code' => 200
     ));
 }]);
+
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
+    Route::resource('customers', 'CustomersController');
+    Route::resource('brands', 'BrandsController');
+    Route::resource('product-categories', 'ProductCategoriesController');
+    Route::resource('products', 'ProductsController');
+    Route::resource('users', 'UsersController');
+
+    Route::get('orders', [
+        'uses' => 'OrdersController@index',
+        'as' => 'orders.index',
+    ]);
+});
