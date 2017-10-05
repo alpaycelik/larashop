@@ -21,8 +21,7 @@ class CreatePostsTable extends Migration
             $table->text('content');
             $table->boolean('blog');
             $table->timestamps();
-            $table->string('created_at_ip');
-            $table->string('updated_at_ip');
+
         });
     }
 
