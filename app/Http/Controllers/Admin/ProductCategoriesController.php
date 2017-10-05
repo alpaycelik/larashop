@@ -14,7 +14,7 @@ class ProductCategoriesController extends Controller
      */
     public function index()
     {
-        //
+        return view('admin.categories.categories_list');
     }
 
     /**
@@ -24,7 +24,7 @@ class ProductCategoriesController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.categories.categories_create');
     }
 
     /**
@@ -35,7 +35,7 @@ class ProductCategoriesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return redirect()->route('product-categories.index')->with('success', "The product category <strong>Category</strong> has successfully been created.");
     }
 
     /**
@@ -46,7 +46,7 @@ class ProductCategoriesController extends Controller
      */
     public function show($id)
     {
-        //
+        return view('admin.categories.categories_delete');
     }
 
     /**
@@ -57,7 +57,7 @@ class ProductCategoriesController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('admin.categories.categories_edit');
     }
 
     /**
@@ -69,7 +69,7 @@ class ProductCategoriesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return redirect()->route('product-categories.index')->with('success', "The product category <strong>Category</strong> has successfully been updated.");
     }
 
     /**
@@ -80,6 +80,6 @@ class ProductCategoriesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return redirect()->route('product-categories.index')->with('success', "The product category <strong>Category</strong> has successfully been archived.");
     }
 }
