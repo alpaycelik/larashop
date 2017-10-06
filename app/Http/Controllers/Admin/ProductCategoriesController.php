@@ -61,14 +61,20 @@ class ProductCategoriesController extends Controller
      */
     public function show($id)
     {
-        $category = Category::find($id);
-        $params = [
-            'title' => 'Edit Product Category',
-            'category' => $category,
-        ];
-        return view('admin.categories.categories_delete')->with($params);
+        try {
+            $category = Category::findOrFail($id);
+            $params = [
+                'title' => 'Edit Product Category',
+                'category' => $category
+            ];
+            return view('admin.categories.categories_delete')->with($params);
+        }
+        catch (ModelNotFoundException $ex) {
+            if ($ex instanceof ModelNotFoundException) {
+                return response()->view('errors.'.'404');
+            }
+        }
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -77,14 +83,20 @@ class ProductCategoriesController extends Controller
      */
     public function edit($id)
     {
-        $category = Category::find($id);
-        $params = [
-            'title' => 'Edit Product Category',
-            'category' => $category
-        ];
-        return view('admin.categories.categories_edit')->with($params);
+        try {
+            $category = Category::findOrFail($id);
+            $params = [
+                'title' => 'Edit Product Category',
+                'category' => $category,
+            ];
+            return view('admin.categories.categories_edit')->with($params);
+        }
+        catch (ModelNotFoundException $ex) {
+            if ($ex instanceof ModelNotFoundException) {
+                return response()->view('errors.'.'404');
+            }
+        }
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -94,22 +106,23 @@ class ProductCategoriesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $category = Category::find($id);
-        if (!$category) {
-            return redirect()
-                ->route('product-categories.index')
-                ->with('warning', 'The category you requested for has not been found.');
+        try {
+            $this->validate($request, [
+                'name' => 'required|unique:categories,name,'.$id,
+                'description' => 'required'
+            ]);
+            $category = Category::findOrFail($id);
+            $category->name = $request->input('name');
+            $category->description = $request->input('description');
+            $category->save();
+            return redirect()->route('product-categories.index')->with('success', "The product category <strong>Category</strong> has successfully been updated.");
         }
-        $this->validate($request, [
-            'name' => 'required|unique:categories,name,'.$id,
-            'description' => 'required',
-        ]);
-        $category->name = $request->input('name');
-        $category->description = $request->input('description');
-        $category->save();
-        return redirect()->route('product-categories.index')->with('success', "The product category <strong>$category->name</strong> has successfully been updated.");
+        catch (ModelNotFoundException $ex) {
+            if ($ex instanceof ModelNotFoundException) {
+                return response()->view('errors.'.'404');
+            }
+        }
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -118,13 +131,15 @@ class ProductCategoriesController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::find($id);
-        if (!$category){
-            return redirect()
-                ->route('product-categories.index')
-                ->with('warning', 'The category you requested for has not been found.');
+        try {
+            $category = Category::findOrFail($id);
+            $category->delete();
+            return redirect()->route('product-categories.index')->with('success', "The product category <strong>Category</strong> has successfully been archived.");
         }
-        $category->delete();
-        return redirect()->route('product-categories.index')->with('success', "The product category <strong>Category</strong> has successfully been archived.");
+        catch (ModelNotFoundException $ex) {
+            if ($ex instanceof ModelNotFoundException) {
+                return response()->view('errors.'.'404');
+            }
+        }
     }
 }

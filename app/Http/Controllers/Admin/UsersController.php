@@ -63,14 +63,20 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = User::find($id);
-        $params = [
-            'title' => 'Delete User',
-            'user' => $user
-        ];
-        return view('admin.users.users_delete')->with($params);
+        try {
+            $user = User::findOrFail($id);
+            $params = [
+                'title' => 'Delete User',
+                'user' => $user
+            ];
+            return view('admin.users.users_delete')->with($params);
+        }
+        catch (ModelNotFoundException $ex) {
+            if ($ex instanceof ModelNotFoundException) {
+                return response()->view('errors.'.'404');
+            }
+        }
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -79,14 +85,20 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        $user = User::find($id);
-        $params = [
-            'title' => 'Edit User',
-            'user' => $user
-        ];
-        return view('admin.users.users_edit')->with($params);
+        try {
+            $user = User::findOrFail($id);
+            $params = [
+                'title' => 'Edit User',
+                'user' => $user
+            ];
+            return view('admin.users.users_edit')->with($params);
+        }
+        catch (ModelNotFoundException $ex) {
+            if ($ex instanceof ModelNotFoundException) {
+                return response()->view('errors.'.'404');
+            }
+        }
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -96,22 +108,22 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = User::find($id);
-        if (!$user){
-            return redirect()
-                ->route('users.index')
-                ->with('warning', 'The user you requested for has not been found.');
+        try {
+            $user = User::findOrFail($id);
+            $this->validate($request, [
+                'name' => 'required',
+                'email' => 'required|email|unique:users,email,'.$id,
+            ]);
+            $user->email = $request->input('email');
+            $user->save();
+            return redirect()->route('users.index')->with('success', "The user <strong>$user->name</strong> has successfully been updated.");
         }
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$id,
-        ]);
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->save();
-        return redirect()->route('users.index')->with('success', "The user <strong>$user->name</strong> has successfully been updated.");
+        catch (ModelNotFoundException $ex) {
+            if ($ex instanceof ModelNotFoundException) {
+                return response()->view('errors.'.'404');
+            }
+        }
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -120,13 +132,15 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::find($id);
-        if (!$user){
-            return redirect()
-                ->route('users.index')
-                ->with('warning', 'The user you requested for has not been found.');
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+            return redirect()->route('users.index')->with('success', "The user <strong>$user->name</strong> has successfully been archived.");
         }
-        $user->delete();
-        return redirect()->route('users.index')->with('success', "The user <strong>$user->name</strong> has successfully been archived.");
+        catch (ModelNotFoundException $ex) {
+            if ($ex instanceof ModelNotFoundException) {
+                return response()->view('errors.'.'404');
+            }
+        }
     }
 }

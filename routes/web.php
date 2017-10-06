@@ -64,6 +64,7 @@ Route::get('/api/v1/categories/{id?}', ['middleware' => 'auth.basic', function($
     ));
 }]);
 
+// Admin routes...
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::resource('customers', 'CustomersController');
     Route::resource('brands', 'BrandsController');
