@@ -24,7 +24,7 @@ class Front extends Controller {
     public function __construct() {
         $this->brands = Brand::all(array('name'));
         $this->categories = Category::all(array('name'));
-        $this->products = Product::all(array('id', 'name', 'price'));
+        $this->products = Product::all(array('id', 'product_name', 'price'));
     }
 
     public function index() {
@@ -110,7 +110,7 @@ class Front extends Controller {
         if (Request::isMethod('post')) {
             $product_id = Request::get('product_id');
             $product = Product::find($product_id);
-            Cart::add(array('id' => $product_id, 'name' => $product->name, 'qty' => 1, 'price' => $product->price));
+            Cart::add(array('id' => $product_id, 'name' => $product->product_name, 'qty' => 1, 'price' => $product->price));
         }
 
         //increment the quantity
