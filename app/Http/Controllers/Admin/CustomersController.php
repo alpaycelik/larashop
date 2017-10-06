@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Customer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -14,7 +15,12 @@ class CustomersController extends Controller
      */
     public function index()
     {
-        return view('admin.customers.customers_list');
+        $customers = Customer::all();
+        $params = [
+            'title' => 'Customer Listing',
+            'customers' => $customers
+        ];
+        return view('admin.customers.customers_list')->with($params);
     }
 
     /**
@@ -24,7 +30,8 @@ class CustomersController extends Controller
      */
     public function create()
     {
-        return view('admin.customers.customers_create');
+        $params = ['title' => 'Create Customer'];
+        return view('admin.customers.customers_create')->with($params);
     }
 
     /**
@@ -35,7 +42,21 @@ class CustomersController extends Controller
      */
     public function store(Request $request)
     {
-        return redirect()->route('customers.index')->with('success', "The customers <strong>customers name</strong> has successfully been created.");
+        $this->validate($request, [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|unique:customers',
+            'postal_address' => 'required',
+            'physical_address' => 'required'
+        ]);
+        $customer = Customer::create([
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
+            'email' => $request->input('email'),
+            'postal_address' => $request->input('postal_address'),
+            'physical_address' => $request->input('physical_address')
+        ]);
+        return redirect()->route('customers.index')->with('success', "The customers <strong>$customer->first_name</strong> has successfully been created.");
     }
 
     /**
@@ -46,7 +67,12 @@ class CustomersController extends Controller
      */
     public function show($id)
     {
-        return view('admin.customers.customers_delete');
+        $customer = Customer::find($id);
+        $params = [
+            'title' => 'Delete Customer',
+            'customer' => $customer
+        ];
+        return view('admin.customers.customers_delete')->with($params);
     }
 
     /**
@@ -57,7 +83,12 @@ class CustomersController extends Controller
      */
     public function edit($id)
     {
-        return view('admin.customers.customers_edit');
+        $customer = Customer::find($id);
+        $params = [
+            'title' => 'Edit Customer',
+            'customer' => $customer
+        ];
+        return view('admin.customers.customers_edit')->with($params);
     }
 
     /**
@@ -69,7 +100,26 @@ class CustomersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return redirect()->route('customers.index')->with('success', "The customers <strong>customers name</strong> has successfully been updated.");
+        $customer = Customer::find($id);
+        if(!$customer){
+            return redirect()
+                ->route('customers.index')
+                ->with('warning', 'The customer you requested for has not been found!');
+        }
+        $this->validate($request, [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email|unique:customers,email,'.$id,
+            'postal_address' => 'required',
+            'physical_address' => 'required'
+        ]);
+        $customer->first_name = $request->input('first_name');
+        $customer->last_name = $request->input('last_name');
+        $customer->email = $request->input('email');
+        $customer->postal_address = $request->input('postal_address');
+        $customer->physical_address = $request->input('physical_address');
+        $customer->save();
+        return redirect()->route('customers.index')->with('success', "The customers <strong>$customer->first_name</strong> has successfully been updated.");
     }
 
     /**
@@ -80,6 +130,13 @@ class CustomersController extends Controller
      */
     public function destroy($id)
     {
-        return redirect()->route('customers.index')->with('success', "The customers <strong>customers name</strong> has successfully been archived.");
+        $customer = Customer::find($id);
+        if(!$customer){
+            return redirect()
+                ->route('customers.index')
+                ->with('warning', 'The customer you requested for has not been found!');
+        }
+        $customer->delete();
+        return redirect()->route('customers.index')->with('success', "The customers <strong>$customer->first_name</strong> has successfully been archived.");
     }
 }
