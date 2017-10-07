@@ -13,6 +13,14 @@ class BrandsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    /*public function __construct()
+    {
+        $this->middleware('permission:create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete', ['only' => ['show', 'delete']]);
+    }*/
+
     public function index()
     {
         $brands = Brand::all();
