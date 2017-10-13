@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -9,16 +10,17 @@ use App\Http\Controllers\Controller;
 class UsersController extends Controller
 {
     /**
+     * Instantiate a new UserController instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('permission:users');
+    }
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-
-    /*public function __construct()
-    {
-        $this->middleware('permission:users');
-    }*/
-
     public function index()
     {
         $users = User::all();
@@ -28,7 +30,6 @@ class UsersController extends Controller
         ];
         return view('admin.users.users_list')->with($params);
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -36,10 +37,13 @@ class UsersController extends Controller
      */
     public function create()
     {
-        $params = ['title' => 'Create User'];
+        $roles = Role::all();
+        $params = [
+            'title' => 'Create User',
+            'roles' => $roles
+        ];
         return view('admin.users.users_create')->with($params);
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -58,9 +62,10 @@ class UsersController extends Controller
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password')),
         ]);
+        $role = Role::find($request->input('role_id'));
+        $user->attachRole($role);
         return redirect()->route('users.index')->with('success', "The user <strong>$user->name</strong> has successfully been created.");
     }
-
     /**
      * Display the specified resource.
      *
@@ -93,9 +98,11 @@ class UsersController extends Controller
     {
         try {
             $user = User::findOrFail($id);
+            $roles = Role::all();
             $params = [
                 'title' => 'Edit User',
-                'user' => $user
+                'user' => $user,
+                'roles' => $roles
             ];
             return view('admin.users.users_edit')->with($params);
         }
@@ -120,8 +127,15 @@ class UsersController extends Controller
                 'name' => 'required',
                 'email' => 'required|email|unique:users,email,'.$id,
             ]);
+            $user->name = $request->input('name');
             $user->email = $request->input('email');
             $user->save();
+            $roles = $user->roles;
+            foreach ($roles as $key => $value) {
+                $user->detachRole($value);
+            }
+            $role = Role::find($request->input('role_id'));
+            $user->attachRole($role);
             return redirect()->route('users.index')->with('success', "The user <strong>$user->name</strong> has successfully been updated.");
         }
         catch (ModelNotFoundException $ex) {
@@ -136,8 +150,7 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id){
         try {
             $user = User::findOrFail($id);
             $user->delete();
