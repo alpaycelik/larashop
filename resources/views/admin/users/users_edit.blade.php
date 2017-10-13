@@ -43,7 +43,7 @@
                                     <select class="form-control" id="role_id" name="role_id">
                                         @if(count($roles))
                                             @foreach($roles as $row)
-                                                <option value="{{$row->id}}" {{$row->id == $user->roles[0]->id ? 'selected="selected"' : ''}}>{{$row->name}}</option>
+                                                <option value="{{$row->id}}" {{$row->id == $user->roles[0]->id ? 'selected="selected"' : ''}}>{{$row->display_name}}</option>
                                             @endforeach
                                         @endif
                                     </select>
