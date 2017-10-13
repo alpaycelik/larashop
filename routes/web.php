@@ -71,7 +71,6 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::resource('product-categories', 'ProductCategoriesController');
     Route::resource('products', 'ProductsController');
     Route::resource('users', 'UsersController');
-
     Route::get('orders', [
         'uses' => 'OrdersController@index',
         'as' => 'orders.index',
