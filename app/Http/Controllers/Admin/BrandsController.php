@@ -75,7 +75,7 @@ class BrandsController extends Controller
                 'title' => 'Edit Brand',
                 'brand' => $brand,
             ];
-            return view('admin.brands.brands_edit')->with($params);
+            return view('admin.brands.brands_delete')->with($params);
         }
         catch (ModelNotFoundException $ex) {
             if ($ex instanceof ModelNotFoundException) {
