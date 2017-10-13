@@ -20,7 +20,9 @@
                                 <th>Email</th>
                                 <th>Postal Address</th>
                                 <th>Physical Address</th>
+                                @ability(('','edit,delete'))
                                 <th>Action</th>
+                                @endability
                             </tr>
                             </thead>
                             <tfoot>
@@ -30,7 +32,9 @@
                                 <th>Email</th>
                                 <th>Postal Address</th>
                                 <th>Physical Address</th>
+                                @ability(('','edit,delete'))
                                 <th>Action</th>
+                                @endability
                             </tr>
                             </tfoot>
                             <tbody>
@@ -42,10 +46,12 @@
                                         <td>{{$row->email}}</td>
                                         <td>{{$row->postal_address}}</td>
                                         <td>{{$row->physical_address}}</td>
+                                        @ability(('','edit,delete'))
                                         <td>
                                             <a href="{{ route('customers.edit', ['id' => $row->id]) }}" class="btn btn-info btn-xs"><i class="fa fa-pencil" title="Edit"></i> </a>
                                             <a href="{{ route('customers.show', ['id' => $row->id]) }}" class="btn btn-danger btn-xs"><i class="fa fa-trash-o" title="Delete"></i> </a>
                                         </td>
+                                        @endability
                                     </tr>
                                 @endforeach
                             @endif

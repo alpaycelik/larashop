@@ -21,7 +21,9 @@
                                 <th>Price</th>
                                 <th>Brand</th>
                                 <th>Category</th>
+                                @ability(('','edit,delete'))
                                 <th>Action</th>
+                                @endability
                             </tr>
                             </thead>
                             <tfoot>
@@ -32,7 +34,9 @@
                                 <th>Price</th>
                                 <th>Brand</th>
                                 <th>Category</th>
+                                @ability(('','edit,delete'))
                                 <th>Action</th>
+                                @endability
                             </tr>
                             </tfoot>
                             <tbody>
@@ -45,10 +49,12 @@
                                         <td>{{number_format($row->price,2)}}</td>
                                         <td>{{$row->brand->name}}</td>
                                         <td>{{$row->category->name}}</td>
+                                        @ability(('','edit,delete'))
                                         <td>
                                             <a href="{{ route('products.edit', ['id' => $row->id]) }}" class="btn btn-info btn-xs"><i class="fa fa-pencil" title="Edit"></i> </a>
                                             <a href="{{ route('products.show', ['id' => $row->id]) }}" class="btn btn-danger btn-xs"><i class="fa fa-trash-o" title="Delete"></i> </a>
                                         </td>
+                                        @endability
                                     </tr>
                                 @endforeach
                             @endif

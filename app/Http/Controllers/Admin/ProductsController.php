@@ -11,6 +11,15 @@ use App\Http\Controllers\Controller;
 class ProductsController extends Controller
 {
     /**
+     * Instantiate a new ProductsController instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('permission:create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete', ['only' => ['show', 'delete']]);
+    }
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

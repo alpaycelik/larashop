@@ -9,18 +9,19 @@ use App\Http\Controllers\Controller;
 class BrandsController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Instantiate a new BrandsController instance.
      */
-
-    /*public function __construct()
+    public function __construct()
     {
         $this->middleware('permission:create', ['only' => ['create', 'store']]);
         $this->middleware('permission:edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:delete', ['only' => ['show', 'delete']]);
-    }*/
-
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $brands = Brand::all();
